@@ -108,13 +108,17 @@ let rec insert x k = function
  elementov, drugi pa vse ostale. Funkcija vrne par teh seznamov. V primeru, ko
  je [k] izven mej seznama, je primeren od seznamov prazen.
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
- # divide 2 [1; 2; 3; 4; 5];;
+ # divide 7 [1; 2; 3; 4; 5];;
  - : int list * int list = ([1; 2], [3; 4; 5])
  # divide 7 [1; 2; 3; 4; 5];;
  - : int list * int list = ([1; 2; 3; 4; 5], [])
 [*----------------------------------------------------------------------------*)
 
-let rec divide = ()
+let rec divide k list =
+  match (k, list) with
+  |_, [] -> ([], [])
+  |k, list when k <= 0 -> ([], list) 
+  |k, x :: xs -> let (list1, list2) = divide (k - 1) xs in (x :: list1, list2)
 
 (*----------------------------------------------------------------------------*]
  Funkcija [rotate n list] seznam zavrti za [n] mest v levo. Predpostavimo, da
@@ -125,6 +129,7 @@ let rec divide = ()
 [*----------------------------------------------------------------------------*)
 
 let rotate = ()
+
 
 (*----------------------------------------------------------------------------*]
  Funkcija [remove x list] iz seznama izbriše vse pojavitve elementa [x].

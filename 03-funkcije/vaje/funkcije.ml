@@ -196,7 +196,7 @@ let rec fold_left_no_acc f = function
  - : int list = []
 [*----------------------------------------------------------------------------*)
 
-let apply_sequence f x n =
+let apply_sequence f x n = ()
   let apply_sequence_aux 
   
 

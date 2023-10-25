@@ -131,7 +131,7 @@ in intbool_separate_aux [] [] (intbool_reverse ib_list)
 type magic =
 | Fire
 | Frost
-| Arkane
+| Arcane
 
 type specialisation =
 | Historian
@@ -169,12 +169,12 @@ type wizard  = {name : string; status : status}
  # update {fire = 1; frost = 1; arcane = 1} Arcane;;
  - : magic_counter = {fire = 1; frost = 1; arcane = 2}
 [*----------------------------------------------------------------------------*)
-type magic_counter = {fire : int; frost : int; arkane : int}
+type magic_counter = {fire : int; frost : int; arcane : int}
 
 let update counter = function
 | Fire -> {counter with fire = counter.fire + 1}
 | Frost -> {counter with frost = counter.frost + 1}
-| Arkane -> {counter with arkane = counter.arkane + 1}
+| Arcane -> {counter with arcane = counter.arcane + 1}
 
 (*----------------------------------------------------------------------------*]
  Funkcija [count_magic] sprejme seznam čarodejev in vrne števec uporabnikov
@@ -191,7 +191,7 @@ let rec count_magic_aux acc = function
        |Newbie -> count_magic_aux acc xs
        |Student (magic, _) -> count_magic_aux (update acc magic) xs 
        |Employed (magic, _) -> count_magic_aux (update acc magic) xs
-in count_magic_aux {fire = 0; frost = 0; arkane = 0}
+in count_magic_aux {fire = 0; frost = 0; arcane = 0}
 
 (*----------------------------------------------------------------------------*]
  Želimo poiskati primernega kandidata za delovni razpis. Študent lahko postane
@@ -207,4 +207,15 @@ in count_magic_aux {fire = 0; frost = 0; arkane = 0}
  - : string option = Some "Jaina"
 [*----------------------------------------------------------------------------*)
 
-let rec find_candidate = ()
+let rec find_candidate magic specialisation wizard_list = 
+let year = match specialisation with
+|Historian -> 3
+|Researcher -> 4
+|Teacher -> 5
+in
+let rec search wizards = match wizards with
+| [] -> None
+| {name; status} :: tl -> match status with
+       |Student (m, y) when y >= year && m = magic -> Some name
+       |_ -> search tl
+in search wizard_list

@@ -128,7 +128,9 @@ let rec divide k list =
  - : int list = [3; 4; 5; 1; 2]
 [*----------------------------------------------------------------------------*)
 
-let rotate = ()
+let rotate n list = 
+  let (list1, list2) = divide n list
+in list2 @ list1
 
 
 (*----------------------------------------------------------------------------*]
@@ -138,7 +140,9 @@ let rotate = ()
  - : int list = [2; 3; 2; 3]
 [*----------------------------------------------------------------------------*)
 
-let rec remove = ()
+let rec remove x = function
+  | y :: ys -> if y = x then remove x ys else y :: remove x ys
+  | [] -> []
 
 (*----------------------------------------------------------------------------*]
  Funkcija [is_palindrome] za dani seznam ugotovi ali predstavlja palindrom.
@@ -149,7 +153,6 @@ let rec remove = ()
  # is_palindrome [0; 0; 1; 0];;
  - : bool = false
 [*----------------------------------------------------------------------------*)
-
 let is_palindrome = ()
 
 (*----------------------------------------------------------------------------*]

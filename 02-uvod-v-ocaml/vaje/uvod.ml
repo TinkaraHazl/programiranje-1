@@ -153,8 +153,13 @@ let rec remove x = function
  # is_palindrome [0; 0; 1; 0];;
  - : bool = false
 [*----------------------------------------------------------------------------*)
-let is_palindrome = ()
+let reverse list =
+  let rec reverse_aux list acc = match list with
+  | [] -> acc
+  | x :: xs -> reverse_aux xs (x :: acc)
+  in reverse_aux list []
 
+let is_palindrome list = reverse list = list
 (*----------------------------------------------------------------------------*]
  Funkcija [max_on_components] sprejme dva seznama in vrne nov seznam, katerega
  elementi so večji od istoležnih elementov na danih seznamih. Skupni seznam ima
@@ -163,9 +168,11 @@ let is_palindrome = ()
  # max_on_components [5; 4; 3; 2; 1] [0; 1; 2; 3; 4; 5; 6];;
  - : int list = [5; 4; 3; 3; 4]
 [*----------------------------------------------------------------------------*)
-
-let rec max_on_components = ()
-
+let max_on_components list1 list2 =
+  let rec max_on_components_aux list1 list2 acc = match list1, list2 with
+  | x :: xs , y :: ys -> if x >= y then max_on_components_aux xs ys (x :: acc) else max_on_components_aux xs ys (y :: acc)
+  | _, _ -> reverse acc
+  in max_on_components_aux list1 list2 []
 (*----------------------------------------------------------------------------*]
  Funkcija [second_largest] vrne drugo največjo vrednost v seznamu. Pri tem se
  ponovitve elementa štejejo kot ena vrednost. Predpostavimo, da ima seznam vsaj
@@ -176,4 +183,9 @@ let rec max_on_components = ()
  - : int = 10
 [*----------------------------------------------------------------------------*)
 
-let second_largest = ()
+let second_largest list = 
+  let rec maximum list = match list with
+    | [] -> failwith "List is too short."
+    | x :: [] -> x
+    | x :: xs -> max x (maximum xs)
+in maximum (remove (maximum list) list)

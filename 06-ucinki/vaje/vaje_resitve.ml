@@ -4,7 +4,7 @@ Standardni vhod lahko simuliramo z prednastavljenimi vrednostmi.
 Odkomentirajte spodnjih nekaj vrstic, ki simulirajo branje prednastavljenega niza.
 *)
 
-let vhod = ref [
+(*let vhod = ref [
   "1";
   "1";
   "2";
@@ -16,7 +16,7 @@ let read_line () =
   match !vhod with
   | [] -> failwith "Ni več vhodnih podatkov"
   | x :: xs -> vhod := xs; print_endline x; x
-
+*)
 
 type stanje = {
   oznaka : string

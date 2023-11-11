@@ -35,7 +35,7 @@ type player =
  Namig: Vaša koda bo lepša, če definirate še dodatne tipe.
 [*----------------------------------------------------------------------------*)
 
-type grid = unit  (* DOPOLNI ME *)
+type grid = unit  (* DOPOLNI ME hm *)
 
 (*----------------------------------------------------------------------------*]
  Definirajte vrednost, ki predstavlja prazno mrežo.  

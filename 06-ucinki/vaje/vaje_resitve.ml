@@ -76,10 +76,14 @@ let rec izpisi_moznosti () =
 let izpisi_avtomat avtomat =
   let izpisi_stanje stanje =
     let prikaz = stanje.oznaka in
-    let prikaz = if stanje = avtomat.zacetno_stanje then "-> " ^ prikaz else prikaz in
-    let prikaz = if List.mem stanje avtomat.sprejemna_stanja then prikaz ^ " +" else prikaz in
+    let prikaz = 
+      if stanje = avtomat.zacetno_stanje then "-> " ^ prikaz else prikaz
+    in
+    let prikaz = 
+      if List.mem stanje avtomat.sprejemna_stanja then prikaz ^ " +" else prikaz 
+    in
     print_endline prikaz
-  in
+  in 
   List.iter izpisi_stanje avtomat.stanja
 
 let beri_niz model =
@@ -103,7 +107,7 @@ let view model =
 let init avtomat = {
   avtomat;
   stanje_avtomata = avtomat.zacetno_stanje;
-  stanje_vmesnika = SeznamMoznosti
+  stanje_vmesnika = SeznamMoznosti;
 }
 
 let rec main_loop model =
@@ -124,7 +128,7 @@ let vsebuje_samo_nicle =
     (nima_enk, '1', ima_enke);
     (ima_enke, '0', ima_enke);
     (ima_enke, '1', ima_enke);
-  ]
+  ];
 }
 
 let _ = main_loop (init vsebuje_samo_nicle)

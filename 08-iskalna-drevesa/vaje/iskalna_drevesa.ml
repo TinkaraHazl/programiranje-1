@@ -175,7 +175,16 @@ in match tree with
  Node (Node (Node (Empty, 0, Empty), 2, Empty), 5,
  Node (Node (Empty, 6, Empty), 11, Empty))
 [*----------------------------------------------------------------------------*)
-
+let rec delete x bst = match bst with
+|Empty -> Empty
+|Node(l, y, d) when x > y -> delete x d
+|Node(l, y, d) when x < y -> delete x l
+|Node(l, y, d) as bst -> (
+     match succ bst with 
+     |None -> l
+     |Some s -> let izbrisi = delete s d in
+     Node(l, s, izbrisi)
+)
 
 (*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*]
  SLOVARJI

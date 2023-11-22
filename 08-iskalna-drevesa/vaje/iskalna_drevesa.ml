@@ -177,8 +177,8 @@ in match tree with
 [*----------------------------------------------------------------------------*)
 let rec delete x bst = match bst with
 |Empty -> Empty
-|Node(l, y, d) when x > y -> delete x d
-|Node(l, y, d) when x < y -> delete x l
+|Node(l, y, d) when x > y -> Node(l, y, delete x d)
+|Node(l, y, d) when x < y -> Node(delete x l, y, d)
 |Node(l, y, d) as bst -> (
      match succ bst with 
      |None -> l
@@ -186,6 +186,16 @@ let rec delete x bst = match bst with
      Node(l, s, izbrisi)
 )
 
+let rec delete x bst = match bst with
+|Empty -> Empty
+|Node(l, y, d) when x > y -> Node(l, y, delete x d)
+|Node(l, y, d) when x < y -> Node(delete x l, y, d)
+|Node(l, y, d) as bst -> (
+     match pred bst with 
+     |None -> d
+     |Some s -> let izbrisi = delete s l in
+     Node(izbrisi, s, d)
+)
 (*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*]
  SLOVARJI
 

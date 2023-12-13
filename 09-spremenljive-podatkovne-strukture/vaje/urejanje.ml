@@ -15,14 +15,20 @@
  # insert 7 [];;
  - : int list = [7]
 [*----------------------------------------------------------------------------*)
-
-
+let rec insert y xs = match xs with
+|[] -> [y]
+|x :: tail -> if y > x then x :: (insert y tail) else y :: x :: tail
 (*----------------------------------------------------------------------------*]
  Prazen seznam je že urejen. Funkcija [insert_sort] uredi seznam tako da
  zaporedoma vstavlja vse elemente seznama v prazen seznam.
 [*----------------------------------------------------------------------------*)
+(*let insert_sort l =
+  let rec insert_sort_aux l p = match l with
+  |[] -> p
+  |x :: xs -> insert_sort_aux xs (insert x p)
+in insert_sort_aux l []*)
 
-
+let insert_sort l = List.fold_left (fun acc x -> insert x acc) [] l
 
 (*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*]
  Urejanje z Izbiranjem
@@ -69,7 +75,10 @@
  # test;;
  - : int array = [|0; 4; 2; 3; 1|]
 [*----------------------------------------------------------------------------*)
-
+let swap a i j = 
+  let v = a.(i) in 
+  a.(i) <- a.(j);
+  a.(j) <- v
 
 (*----------------------------------------------------------------------------*]
  Funkcija [index_min a lower upper] poišče indeks najmanjšega elementa tabele
@@ -77,12 +86,16 @@
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  index_min [|0; 2; 9; 3; 6|] 2 4 = 4
 [*----------------------------------------------------------------------------*)
-
-
+let index_min a lower upper = 
+  let index_min = ref lower in
+  for i = lower to upper do
+    if a.(i) < a.(!index_min) then index_min := i
+    done;
+  !index_min
 (*----------------------------------------------------------------------------*]
  Funkcija [selection_sort_array] implementira urejanje z izbiranjem na mestu. 
 [*----------------------------------------------------------------------------*)
-
+let selection_sort_array 
 
 (*----------------------------------------------------------------------------*]
  Funkcija [min_and_rest list] vrne par [Some (z, list')] tako da je [z]

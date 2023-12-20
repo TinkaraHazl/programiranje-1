@@ -21,6 +21,17 @@ let test_matrix =
      [| 2 ; 4 ; 5 |];
      [| 7 ; 0 ; 1 |] |]
 
+let max_cheese cheese_matrix =
+   let dimy = Array.length cheese_matrix in
+   let dimx = Array.length cheese_matrix.(0) in
+   let rec best_path y x =
+      let current_cheese = cheese_matrix.(y).(x) in
+      let best_right = if x + 1 = dimx then 0 else best_path y (x + 1) in
+      let best_down = if y + 1 = dimy then 0 else best_path (y + 1) x in
+      max best_right best_down + current_cheese
+   in
+   best_path 0 0
+
 (*----------------------------------------------------------------------------*]
  Poleg količine sira, ki jo miška lahko poje, jo zanima tudi točna pot, ki naj
  jo ubere, da bo prišla do ustrezne pojedine.
@@ -38,7 +49,32 @@ let test_matrix =
 
 type mouse_direction = Down | Right
 
+let optimal_path cheese_matrix =
+   let dimy = Array.length cheese_matrix in
+   let dimx = Array.length cheese_matrix.(0) in
+   let rec best_path y x =
+      let current_cheese = cheese_matrix.(y).(x) in
+      let best_right, path_right = if x + 1 = dimx then (0, []) else best_path y (x + 1) in
+      let best_down, path_down = if y + 1 = dimy then (0, []) else best_path (y + 1) x in
+      let best, path = 
+         if best_right >= best_down
+            then best_right, Right :: path_right 
+            else best_down, Down :: path_down
+         in
+      best + current_cheese, path
+   in
+   best_path 0 0
 
+let convert_path cheese_matrix path =
+   let rec walk y x = function
+   |[] -> []
+   |dir :: dirs -> let down, right = match dir with
+      | Down -> (0, 1)
+      | Right -> (1, 0)
+      in cheese_matrix.(y).(x) :: walk (y + down) (x + right) dirs
+   in walk 0 0 path
+
+   
 (*----------------------------------------------------------------------------*]
  Rešujemo problem sestavljanja alternirajoče obarvanih stolpov. Imamo štiri
  različne tipe gradnikov, dva modra in dva rdeča. Modri gradniki so višin 2 in
@@ -54,7 +90,17 @@ type mouse_direction = Down | Right
  # alternating_towers 10;;
  - : int = 35
 [*----------------------------------------------------------------------------*)
-
+let alternating_towers h =
+   let rec first_red h =
+      if h <= 0 then 0
+      else if h <= 2 then 1
+      else first_blue (h - 1) + first_blue (h - 2)
+   and first_blue h =
+      if h <= 1 then 0
+      else if h = 2 then 1
+      else if h = 3 then 2
+      else first_red (h - 2) + first_red (h - 3)
+   in first_blue h + first_red h
 
 
 (*----------------------------------------------------------------------------*]
@@ -79,13 +125,13 @@ type mouse_direction = Down | Right
 [*----------------------------------------------------------------------------*)
 
 
-type blue_block = Blue3 | Blue2
+(*type blue_block = Blue3 | Blue2
 type red_block = Red2 | Red1
 
 type red_tower = TopRed of red_block * blue_tower | RedBottom
 and blue_tower = TopBlue of blue_block * red_tower | BlueBottom
 
-type tower = Red of red_tower | Blue of blue_tower
+type tower = Red of red_tower | Blue of blue_tower*)
 
 (*----------------------------------------------------------------------------*]
  Vdrli ste v tovarno čokolade in sedaj stojite pred stalažo kjer so ena ob
@@ -107,4 +153,4 @@ type tower = Red of red_tower | Blue of blue_tower
  - : bool list = [false; true; false; false; false; true; false; false; false]
 [*----------------------------------------------------------------------------*)
 
-let test_shelf = [1;2;-5;3;7;19;-30;1;0]
+(*let test_shelf = [1;2;-5;3;7;19;-30;1;0]*)

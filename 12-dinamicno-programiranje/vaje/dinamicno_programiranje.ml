@@ -125,14 +125,33 @@ let alternating_towers h =
 [*----------------------------------------------------------------------------*)
 
 
-(*type blue_block = Blue3 | Blue2
+type blue_block = Blue3 | Blue2
 type red_block = Red2 | Red1
 
 type red_tower = TopRed of red_block * blue_tower | RedBottom
 and blue_tower = TopBlue of blue_block * red_tower | BlueBottom
 
-type tower = Red of red_tower | Blue of blue_tower*)
+type tower = Red of red_tower | Blue of blue_tower
 
+let rec add_red red_block = List.map (fun t -> TopRed (red_block, t))
+let rec add_blue blue_block = List.map (fun t -> TopBlue (blue_block, t))
+
+let enumerate_towers height = 
+   let rec redtop height =
+      if height < 0 then []
+      else if height = 0 then [RedBottom]
+      else
+         add_red Red1 (bluetop (height - 1))
+         @ add_red Red2 (bluetop (height - 2))
+   and bluetop height =
+      if height < 0 || height = 1 then []
+      else if height = 0 then [BlueBottom]
+      else
+         add_blue Blue2 (redtop (height - 2))
+         @ add_blue Blue3(redtop (height - 3))
+   in
+   List.map (fun t -> Red t) (redtop height) 
+   @ List.map (fun t -> Blue t) (bluetop height)
 (*----------------------------------------------------------------------------*]
  Vdrli ste v tovarno čokolade in sedaj stojite pred stalažo kjer so ena ob
  drugi naložene najboljše slaščice. Želite si pojesti čim več sladkorja, a
@@ -153,4 +172,4 @@ type tower = Red of red_tower | Blue of blue_tower*)
  - : bool list = [false; true; false; false; false; true; false; false; false]
 [*----------------------------------------------------------------------------*)
 
-(*let test_shelf = [1;2;-5;3;7;19;-30;1;0]*)
+let test_shelf = [1;2;-5;3;7;19;-30;1;0]

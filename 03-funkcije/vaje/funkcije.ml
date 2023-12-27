@@ -195,10 +195,11 @@ let rec fold_left_no_acc f = function
  # apply_sequence (fun x -> x * x) 2 (-5);;
  - : int list = []
 [*----------------------------------------------------------------------------*)
-
-let apply_sequence f x n = ()
-  
-
+let apply_sequence f x n =
+  let rec apply_sequence_aux f x n l = match n with
+  |0 -> reverse l
+  |y -> if n < 0 then [] else apply_sequence_aux f (f x) (n - 1) ((f x) :: l)
+  in apply_sequence_aux f x n [] 
 (*----------------------------------------------------------------------------*]
  Funkcija [filter f list] vrne seznam elementov [list], pri katerih funkcija [f]
  vrne vrednost [true].
@@ -207,9 +208,11 @@ let apply_sequence f x n = ()
  # filter ((<)3) [0; 1; 2; 3; 4; 5];;
  - : int list = [4; 5]
 [*----------------------------------------------------------------------------*)
-
-let rec filter = ()
-
+let filter f list =
+  let rec filter_aux f list acc = match list with
+  | [] -> reverse acc
+  | x :: xs -> if f x then filter_aux f xs (x :: acc) else filter_aux f xs acc
+  in filter_aux f list []
 (*----------------------------------------------------------------------------*]
  Funkcija [exists] sprejme seznam in funkcijo, ter vrne vrednost [true] čim
  obstaja element seznama, za katerega funkcija vrne [true] in [false] sicer.
@@ -221,9 +224,9 @@ let rec filter = ()
  # exists ((<) 8) [0; 1; 2; 3; 4; 5];;
  - : bool = false
 [*----------------------------------------------------------------------------*)
-
-let rec exists = ()
-
+let rec exists f list = match list with
+|[] -> false
+|x :: xs -> if f x then true else exists f xs
 (*----------------------------------------------------------------------------*]
  Funkcija [first f default list] vrne prvi element seznama, za katerega
  funkcija [f] vrne [true]. Če takšnega elementa ni, vrne [default].
@@ -235,5 +238,6 @@ let rec exists = ()
  # first ((<) 8) 0 [1; 1; 2; 3; 5; 8];;
  - : int = 0
 [*----------------------------------------------------------------------------*)
-
-let rec first = ()
+let rec first f default list = match list with
+|[] -> default
+|x :: xs -> if f x then x else first f default xs

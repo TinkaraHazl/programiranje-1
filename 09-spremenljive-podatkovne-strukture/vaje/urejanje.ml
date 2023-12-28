@@ -95,19 +95,38 @@ let index_min a lower upper =
 (*----------------------------------------------------------------------------*]
  Funkcija [selection_sort_array] implementira urejanje z izbiranjem na mestu. 
 [*----------------------------------------------------------------------------*)
-(*let selection_sort_array*) 
-
+let selection_sort_array array =
+  for boundary_sorted = 0 to (Array.length array - 1) do
+    swap array boundary_sorted (index_min array boundary_sorted (Array.length array - 1))
+  done
 (*----------------------------------------------------------------------------*]
  Funkcija [min_and_rest list] vrne par [Some (z, list')] tako da je [z]
  najmanjši element v [list] in seznam [list'] enak [list] z odstranjeno prvo
  pojavitvijo elementa [z]. V primeru praznega seznama vrne [None]. 
 [*----------------------------------------------------------------------------*)
+let min_and_rest list =
+  let rec rest list min acc = match list with
+  |[] -> failwith "not found"
+  |x :: xs -> if x = min then acc @ xs else rest xs min (x :: acc) 
+  in
+  let rec find_min list current_min = match list with
+  |[] -> current_min
+  |x :: xs -> if x < current_min then find_min xs x else find_min xs current_min
+  in match list with
+  |[] -> None
+  |x :: xs -> let z = find_min xs x
+  in
+  Some(z, rest list z [])
 
 (*----------------------------------------------------------------------------*]
  Funkcija [selection_sort] je implementacija zgoraj opisanega algoritma.
  Namig: Uporabi [min_and_rest] iz prejšnje naloge.
 [*----------------------------------------------------------------------------*)
-
+let selection_sort list =
+  let rec selection_sort_aux list acc = match min_and_rest list with
+  |None -> List.rev acc
+  |Some (min, rest) -> selection_sort_aux rest (min :: acc) 
+  in selection_sort_aux list []
 
 (*----------------------------------------------------------------------------*]
  Funkcija [randlist len max] generira seznam dolžine [len] z naključnimi
@@ -116,7 +135,12 @@ let index_min a lower upper =
  # let l = randlist 10 10 ;;
  val l : int list = [0; 1; 0; 4; 0; 9; 1; 2; 5; 4]
 [*----------------------------------------------------------------------------*)
-
+let randlist len max = 
+  let rec randlist_aux len max acc =
+  if len <= 0 then acc
+  else
+  randlist_aux (len - 1) max ((Random.int max) :: acc)
+  in randlist_aux len max []
 
 (*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*]
  Sedaj lahko s pomočjo [randlist] primerjamo našo urejevalno funkcijo (imenovana

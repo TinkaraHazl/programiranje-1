@@ -21,7 +21,7 @@ type 'a tree =
 [*----------------------------------------------------------------------------*)
 let leaf x = Node(Empty, x, Empty)
 
-let test_tree = Node(Node(leaf 0, 2, Empty), 5, (Node(leaf 6, 7, leaf 11)))
+let test_tree = Node(Node(leaf 0, 2, Empty), 5, Node(leaf 6, 7, leaf 11))
 
 (*----------------------------------------------------------------------------*]
  Funkcija [mirror] vrne prezrcaljeno drevo. Na primeru [test_tree] torej vrne
@@ -186,7 +186,7 @@ let rec delete x bst = match bst with
      Node(l, s, izbrisi)
 )
 
-let rec delete x bst = match bst with
+(*let rec delete x bst = match bst with
 |Empty -> Empty
 |Node(l, y, d) when x > y -> Node(l, y, delete x d)
 |Node(l, y, d) when x < y -> Node(delete x l, y, d)
@@ -194,8 +194,8 @@ let rec delete x bst = match bst with
      match pred bst with 
      |None -> d
      |Some s -> let izbrisi = delete s l in
-     Node(izbrisi, s, d)
-)
+     Node(izbrisi, s, d)*)
+
 (*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*]
  SLOVARJI
 
@@ -206,7 +206,7 @@ let rec delete x bst = match bst with
  strukturo glede na ključe. Ker slovar potrebuje parameter za tip ključa in tip
  vrednosti, ga parametriziramo kot [('key, 'value) dict].
 [*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=*)
-
+type ('key, 'value) dict = ('key * 'value) tree
 
 (*----------------------------------------------------------------------------*]
  Napišite testni primer [test_dict]:
@@ -216,8 +216,8 @@ let rec delete x bst = match bst with
          /
      "c":-2
 [*----------------------------------------------------------------------------*)
-
-
+let test_dict : (string, int) dict =
+Node(leaf ("a", 0), ("b", 1), Node(leaf ("c",-2),("d",2), Empty))
 (*----------------------------------------------------------------------------*]
  Funkcija [dict_get key dict] v slovarju poišče vrednost z ključem [key]. Ker
  slovar vrednosti morda ne vsebuje, vrne [option] tip.
@@ -227,8 +227,11 @@ let rec delete x bst = match bst with
  # dict_get "c" test_dict;;
  - : int option = Some (-2)
 [*----------------------------------------------------------------------------*)
-
-      
+let rec dict_get key dict = match dict with
+|Empty -> None
+|Node(d, (k, v), b) when k = key -> Some v 
+|Node(d, (k, v), b) when k > key -> dict_get key d
+|Node(d, (k, v), b) -> dict_get key b
 (*----------------------------------------------------------------------------*]
  Funkcija [print_dict] sprejme slovar s ključi tipa [string] in vrednostmi tipa
  [int] in v pravilnem vrstnem redu izpiše vrstice "ključ : vrednost" za vsa
@@ -244,8 +247,12 @@ let rec delete x bst = match bst with
  d : 2
  - : unit = ()
 [*----------------------------------------------------------------------------*)
-
-
+let rec print_dict dict = match dict with
+|Empty -> ()
+|Node(d, (k, v), b) -> 
+     print_dict d; 
+     print_string (k ^ " : ") ; print_int v; print_string "\n"; 
+     print_dict b
 (*----------------------------------------------------------------------------*]
  Funkcija [dict_insert key value dict] v slovar [dict] pod ključ [key] vstavi
  vrednost [value]. Če za nek ključ vrednost že obstaja, jo zamenja.
@@ -264,4 +271,8 @@ let rec delete x bst = match bst with
  d : 2
  - : unit = ()
 [*----------------------------------------------------------------------------*)
-
+let rec dict_insert key value dict = match dict with
+|Empty -> leaf (key, value)
+|Node(l, (k, v), d) when k = key -> Node(l, (key, value), d)
+|Node(l, (k, v), d) when k < key -> Node(l, (k, v), dict_insert key value d)
+|Node(l, (k, v), d) -> Node(dict_insert key value l, (k, v), d)

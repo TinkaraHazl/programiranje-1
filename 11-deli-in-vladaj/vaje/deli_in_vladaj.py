@@ -155,8 +155,10 @@ def quicksort_part(a, start, end):
         return
     else:
         pivot_i = pivot(a, start, end)
-        quicksort_part(a, start, pivot_i - 1), 
+        quicksort_part(a, start, pivot_i - 1)
         quicksort_part(a, pivot_i + 1, end)
+        return
+
 
 def quicksort(a):
     quicksort_part(a, 0, len(a) - 1)
